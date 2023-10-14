@@ -1,4 +1,5 @@
 import 'package:dio_calculadora_imc_flutter/pages/calculator_page.dart';
+import 'package:dio_calculadora_imc_flutter/repositories/history_repository.dart';
 import 'package:dio_calculadora_imc_flutter/shared/app_images.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +11,7 @@ class AccessPage extends StatefulWidget {
 }
 
 class _AccessPageState extends State<AccessPage> {
+  HistoryRepository historyRepository = HistoryRepository();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -53,31 +55,15 @@ class _AccessPageState extends State<AccessPage> {
                             color: Color(0xFF66ED6C)),
                       ),
                       const Spacer(
-                        flex: 3,
-                      ),
-                      /*Row(
-                        children: [
-                          const Spacer(
-                            flex: 1,
-                          ),
-                          Expanded(
-                            flex: 3,
-                            child: Image.asset(AppImages.garfield),
-                          ),
-                          const Spacer(
-                            flex: 1,
-                          ),
-                        ],
-                      ),*/
-                      const Spacer(
-                        flex: 1,
+                        flex: 4,
                       ),
                       ElevatedButton(
                         onPressed: () {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => CalculatorPage()));
+                                  builder: (context) =>
+                                      const CalculatorPage()));
                         },
                         style: ButtonStyle(
                           shape: MaterialStateProperty.all(

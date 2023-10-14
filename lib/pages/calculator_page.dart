@@ -1,6 +1,11 @@
+import 'package:dio_calculadora_imc_flutter/pages/history_page.dart';
+import 'package:dio_calculadora_imc_flutter/repositories/history_repository.dart';
+import 'package:dio_calculadora_imc_flutter/shared/controllers.dart';
+import 'package:dio_calculadora_imc_flutter/shared/formatted_date.dart';
 import 'package:dio_calculadora_imc_flutter/shared/imc.dart';
 import 'package:dio_calculadora_imc_flutter/shared/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CalculatorPage extends StatefulWidget {
   const CalculatorPage({super.key});
@@ -10,20 +15,18 @@ class CalculatorPage extends StatefulWidget {
 }
 
 class _CalculatorPageState extends State<CalculatorPage> {
-  TextEditingController nomeController = TextEditingController();
-  TextEditingController pesoController = TextEditingController();
-  TextEditingController alturaController = TextEditingController();
-
-  String get nome => nomeController.text.trim();
-  double? get peso => double.tryParse(pesoController.text.replaceAll(',', '.'));
-  double? get altura =>
-      double.tryParse(alturaController.text.replaceAll(',', '.'));
-  String? resultado;
-
+  Controllers controllers = Controllers();
+  FormattedDate formattedDate = FormattedDate();
   bool isCardVisible = false;
+  late HistoryRepository historyRepository;
 
   @override
   Widget build(BuildContext context) {
+    historyRepository = Provider.of<HistoryRepository>(context);
+
+    Imc imc = Imc(
+        controllers.getNome(), controllers.peso ?? 0, controllers.altura ?? 0);
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color(0xFF1B1C35),
@@ -34,7 +37,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
               flex: 1,
             ),
             Expanded(
-              flex: 3,
+              flex: 4,
               child: Container(
                 width: double.infinity,
                 height: 60,
@@ -42,7 +45,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                 child: CustomTextField(
                   label: 'Seu nome',
                   hint: 'Digite apenas letras',
-                  controller: nomeController,
+                  controller: controllers.nomeController,
                   textType: TextInputType.name,
                 ),
               ),
@@ -51,7 +54,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
               flex: 1,
             ),
             Expanded(
-              flex: 3,
+              flex: 4,
               child: Container(
                 width: double.infinity,
                 height: 60,
@@ -59,7 +62,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                 child: CustomTextField(
                   label: 'Seu peso (Kg)',
                   hint: 'Digite apenas números',
-                  controller: pesoController,
+                  controller: controllers.pesoController,
                   textType: TextInputType.number,
                 ),
               ),
@@ -68,7 +71,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
               flex: 1,
             ),
             Expanded(
-              flex: 3,
+              flex: 4,
               child: Container(
                 width: double.infinity,
                 height: 60,
@@ -76,7 +79,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                 child: CustomTextField(
                   label: 'Sua altura (m)',
                   hint: 'Digite apenas números',
-                  controller: alturaController,
+                  controller: controllers.alturaController,
                   textType: TextInputType.number,
                 ),
               ),
@@ -91,8 +94,6 @@ class _CalculatorPageState extends State<CalculatorPage> {
                 onPressed: () {
                   setState(() {
                     FocusScope.of(context).unfocus();
-                    Imc imc = Imc(nome, peso ?? 0, altura ?? 0);
-                    resultado = imc.resultado;
                     isCardVisible = !isCardVisible;
                   });
                 },
@@ -122,12 +123,53 @@ class _CalculatorPageState extends State<CalculatorPage> {
                 child: Container(
                   padding: const EdgeInsets.all(10),
                   child: Text(
-                    resultado ?? '',
+                    imc.resultado,
                     style: const TextStyle(fontSize: 16),
                     textAlign: TextAlign.center,
                   ),
                 ),
               ),
+            const Spacer(
+              flex: 1,
+            ),
+            SizedBox(
+              width: 100,
+              height: 30,
+              child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    historyRepository.addHistory(
+                      ListTile(
+                        title: Text(
+                            '${controllers.getNome()}: ${controllers.peso.toString()}Kg e ${controllers.altura.toString()}m - ${imc.estadoSaude}'),
+                        subtitle: Text(formattedDate.dataFormatada),
+                        isThreeLine: true,
+                      ),
+                    );
+                  });
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const HistoryPage()));
+                },
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all(const Color(0xFF8C6147)),
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                  ),
+                ),
+                child: const Text(
+                  'Histórico',
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.normal,
+                      color: Color(0xFF66ED6C)),
+                ),
+              ),
+            ),
             const Spacer(
               flex: 1,
             ),

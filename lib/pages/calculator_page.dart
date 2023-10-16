@@ -30,7 +30,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color(0xFF1B1C35),
-        appBar: AppBar(title: const Text('Vamos lá!')),
+        appBar: AppBar(title: const Text('Digite seus dados')),
         body: Column(
           children: [
             const Spacer(
@@ -44,7 +44,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                 margin: const EdgeInsets.symmetric(horizontal: 40),
                 child: CustomTextField(
                   label: 'Seu nome',
-                  hint: 'Digite apenas letras',
+                  hint: 'Ex.: Maria',
                   controller: controllers.nomeController,
                   textType: TextInputType.name,
                 ),
@@ -61,7 +61,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                 margin: const EdgeInsets.symmetric(horizontal: 40),
                 child: CustomTextField(
                   label: 'Seu peso (Kg)',
-                  hint: 'Digite apenas números',
+                  hint: 'Ex.: 50',
                   controller: controllers.pesoController,
                   textType: TextInputType.number,
                 ),
@@ -78,7 +78,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                 margin: const EdgeInsets.symmetric(horizontal: 40),
                 child: CustomTextField(
                   label: 'Sua altura (m)',
-                  hint: 'Digite apenas números',
+                  hint: 'Ex.: 1.60',
                   controller: controllers.alturaController,
                   textType: TextInputType.number,
                 ),
@@ -94,7 +94,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                 onPressed: () {
                   setState(() {
                     FocusScope.of(context).unfocus();
-                    isCardVisible = !isCardVisible;
+                    isCardVisible = true;
                   });
                 },
                 style: ButtonStyle(
@@ -133,7 +133,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
               flex: 1,
             ),
             SizedBox(
-              width: 100,
+              width: 190,
               height: 30,
               child: ElevatedButton(
                 onPressed: () {
@@ -162,7 +162,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                   ),
                 ),
                 child: const Text(
-                  'Histórico',
+                  'Adicionar ao Histórico',
                   style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.normal,
